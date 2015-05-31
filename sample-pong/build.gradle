@@ -1,0 +1,37 @@
+apply plugin: 'application'
+
+buildscript {
+    repositories { jcenter() }
+    dependencies {
+        classpath 'com.netflix.nebula:gradle-extra-configurations-plugin:2.2.0'
+    }
+}
+
+repositories {
+    jcenter()
+}
+
+
+dependencies {
+    compile 'com.netflix.karyon:karyon2-admin-web:2.7.1'
+    compile 'com.netflix.karyon:karyon2-jersey-blocking:2.7.1'
+    compile 'com.netflix.karyon:karyon2-eureka:2.7.1'
+    compile 'com.netflix.karyon:karyon2-archaius:2.7.1'
+    compile 'com.netflix.karyon:karyon2-servo:2.7.1'
+
+    compile 'com.google.inject:guice:3.0'
+    compile 'org.slf4j:slf4j-api:1.7.0'
+    runtime 'org.slf4j:slf4j-simple:1.7.0'
+}
+
+task runApp(dependsOn: [classes], type: JavaExec) {
+    group = "Sample-Pong"
+    description = "Sample-Pong application"
+
+    main = "org.bk.samplepong.app.SamplePongApp"
+    classpath = sourceSets.main.runtimeClasspath
+
+    jvmArgs "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005"
+    systemProperty 'java.awt.headless', 'true'
+    systemProperty 'archaius.deployment.environment', 'dev'
+}
