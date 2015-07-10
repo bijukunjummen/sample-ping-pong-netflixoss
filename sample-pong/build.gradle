@@ -36,3 +36,18 @@ task runApp(dependsOn: [classes], type: JavaExec) {
     systemProperty 'java.awt.headless', 'true'
     systemProperty 'archaius.deployment.environment', 'dev'
 }
+
+
+task runAppAnnotation(dependsOn: [classes], type: JavaExec) {
+    group = "Examples"
+    description = "Run simple URI router based Hello NOSS server using annotation based bootstrapping."
+
+    main = "netflix.karyon.KaryonRunner"
+    classpath = sourceSets.main.runtimeClasspath
+
+    jvmArgs "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005"
+    systemProperty 'java.awt.headless', 'true'
+    systemProperty 'archaius.deployment.environment', 'dev'
+
+    args = ["org.bk.samplepong.governator.SamplePongAppGovernator"]
+}

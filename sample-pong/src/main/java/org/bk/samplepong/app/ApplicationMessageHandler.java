@@ -1,23 +1,30 @@
 package org.bk.samplepong.app;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.inject.Inject;
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.reactivex.netty.protocol.http.server.HttpServerRequest;
 import io.reactivex.netty.protocol.http.server.HttpServerResponse;
 import io.reactivex.netty.protocol.http.server.RequestHandler;
-import netflix.karyon.transport.http.health.HealthCheckEndpoint;
 import org.bk.samplepong.domain.Message;
-import org.bk.samplepong.domain.MessageAcknowledgement;
+import org.bk.samplepong.service.MessageHandlerService;
 import rx.Observable;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
 
 
-public class RxNettyHandler implements RequestHandler<ByteBuf, ByteBuf> {
+public class ApplicationMessageHandler implements RequestHandler<ByteBuf, ByteBuf> {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
+
+    private final MessageHandlerService messageHandlerService;
+
+    @Inject
+    public ApplicationMessageHandler(MessageHandlerService messageHandlerService) {
+        this.messageHandlerService = messageHandlerService;
+    }
 
     @Override
     public Observable<Void> handle(HttpServerRequest<ByteBuf> request, HttpServerResponse<ByteBuf> response) {
@@ -30,7 +37,7 @@ public class RxNettyHandler implements RequestHandler<ByteBuf, ByteBuf> {
                         throw new RuntimeException(e);
                     }
                 })
-                .map(m -> new MessageAcknowledgement(m.getId(), m.getPayload(), "Pong"))
+                .flatMap(messageHandlerService::handleMessage)
                 .flatMap(ack -> {
                             try {
                                 return response.writeStringAndFlush(objectMapper.writeValueAsString(ack));
