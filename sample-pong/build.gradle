@@ -1,5 +1,7 @@
 apply plugin: 'application'
 
+mainClassName='org.bk.samplepong.app.SamplePongApp'
+
 buildscript {
     repositories { jcenter() }
     dependencies {
