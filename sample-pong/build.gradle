@@ -1,5 +1,7 @@
 apply plugin: 'application'
 
+mainClassName='org.bk.samplepong.app.SamplePongApp'
+
 buildscript {
     repositories { jcenter() }
     dependencies {
@@ -22,6 +24,7 @@ dependencies {
     compile 'com.google.inject:guice:3.0'
     compile 'org.slf4j:slf4j-api:1.7.0'
     testCompile 'junit:junit:4.12'
+    testCompile 'org.assertj:assertj-core:3.1.0'
     runtime 'org.slf4j:slf4j-simple:1.7.0'
 }
 
